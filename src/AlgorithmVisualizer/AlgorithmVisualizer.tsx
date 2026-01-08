@@ -28,10 +28,28 @@ export default class AlgorithmVisualizer extends React.Component<{}, AlgorithmVi
     resetArray() {
         const array: number[] = [];
         // Fill array with random values from 5 to 500
-        for (let i: number = 0; i < 100; i++) {
+        for (let i: number = 0; i < 270; i++) {
             array.push(randomIntFromInterval(5, 500));
         }
         this.setState({array: array});
+    }
+
+    /* ALGORITHMS */
+
+    bubbleSort() {
+
+    }
+
+    quickSort() {
+    
+    }
+
+    mergeSort() {
+
+    }
+
+    heapSort() {
+        
     }
 
     // Render visualizer component
@@ -40,15 +58,27 @@ export default class AlgorithmVisualizer extends React.Component<{}, AlgorithmVi
         const {array} = this.state;
 
         return (
-            <>
+            <div className="array-container">
+                {/* Generate Bars*/}
                 {array.map((value: number, idx: number) => (
                     // array-bar is a single bar in the visualizer
                     // each is assigned a value from the array
-                    <div className="array-bar" key={idx}>
-                        {value}
+                    // styled with height in px = value
+                    <div 
+                        className="array-bar"
+                        key={idx}
+                        style={{height: `${value}px`}}
+                    >
                     </div>
                 ))}
-            </>
+                {/* Generate New Array Button*/}
+                <button onClick={() => this.resetArray()}>Generate New Array</button>
+                {/* Algorithm Sort Buttons */}
+                <button onClick={() => this.bubbleSort()}>Bubble Sort</button>
+                <button onClick={() => this.quickSort()}>Quick Sort</button>
+                <button onClick={() => this.mergeSort()}>Merge Sort</button>
+                <button onClick={() => this.heapSort()}>Heap Sort</button>
+            </div>
         );
     }
 
