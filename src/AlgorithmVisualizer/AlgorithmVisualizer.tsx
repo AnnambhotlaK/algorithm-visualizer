@@ -1,4 +1,5 @@
 import React from "react";
+import * as sortingAlgorithms from '../sortingAlgorithms/sortingAlgorithms';
 import './AlgorithmVisualizer.css';
 
 // Define component interface
@@ -45,11 +46,18 @@ export default class AlgorithmVisualizer extends React.Component<{}, AlgorithmVi
     }
 
     mergeSort() {
-
+        const sortedArray: number[] = sortingAlgorithms.mergeSort(this.state.array);
+        // test that sortedArray is sorted using built-in sort
+        const tsSorted: number[] = this.state.array.slice().sort((a, b) => a - b);
+        console.log(arraysAreEqual(sortedArray, tsSorted));
     }
 
     heapSort() {
         
+    }
+
+    testSortingAlgorithms() {
+        //TODO: Implement on all algos
     }
 
     // Render visualizer component
@@ -78,6 +86,7 @@ export default class AlgorithmVisualizer extends React.Component<{}, AlgorithmVi
                 <button onClick={() => this.quickSort()}>Quick Sort</button>
                 <button onClick={() => this.mergeSort()}>Merge Sort</button>
                 <button onClick={() => this.heapSort()}>Heap Sort</button>
+                <button onClick={() => this.testSortingAlgorithms()}>Test Sorting Algorithms</button>
             </div>
         );
     }
@@ -88,4 +97,18 @@ export default class AlgorithmVisualizer extends React.Component<{}, AlgorithmVi
 // Generates random integer in given range (min and max inclusive)
 function randomIntFromInterval(min: number, max: number) {
     return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+// Helper for sorting algorithms
+// Decides if two arrays are exactly equal
+function arraysAreEqual(arr1: number[], arr2: number[]): boolean {
+    if (arr1.length !== arr2.length) {
+        return false;
+    }
+    for (let i: number = 0; i < arr1.length; i++) {
+        if (arr1[i] !== arr2[i]) {
+            return false;
+        }
+    }
+    return true;
 }
