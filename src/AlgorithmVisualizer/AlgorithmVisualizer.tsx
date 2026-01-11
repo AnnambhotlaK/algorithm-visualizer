@@ -46,10 +46,20 @@ export default class AlgorithmVisualizer extends React.Component<{}, AlgorithmVi
     }
 
     mergeSort() {
-        const sortedArray: number[] = sortingAlgorithms.mergeSort(this.state.array);
-        // test that sortedArray is sorted using built-in sort
-        const tsSorted: number[] = this.state.array.slice().sort((a, b) => a - b);
-        console.log(arraysAreEqual(sortedArray, tsSorted));
+        const animations: { comparison: number[], swap: number[] }[] = sortingAlgorithms.mergeSort(this.state.array);
+        for (let i = 0; i < animations.length; i++) {
+            const {comparison, swap} = animations[i];
+            setTimeout(() => {
+                const arrayBars = document.getElementsByClassName('array-bar');
+                arrayBars[comparison[1]].style.backgroundColor = 'red';
+                arrayBars[comparison[0]].style.backgroundColor = 'red';
+                setTimeout(() => {
+                    arrayBars[comparison[1]].style.backgroundColor = 'pink';
+                    arrayBars[comparison[0]].style.backgroundColor = 'pink';
+                }, (i + 1) * 10);
+            }, i * 10);
+
+        }
     }
 
     heapSort() {

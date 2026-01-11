@@ -1,47 +1,92 @@
 /* Stores various array sorting algorithms for the visualizer */
-export const mergeSort = (array: number[]) => {
-    // Merge Sort Algorithm Implementation
-    // base case: array is of length 1 or less -> return array
-    if (array.length === 1) {
+
+/**
+ * Merge Sort implementation specially designed for animation.
+ * @param array array of values to sort
+ */
+export function mergeSort(array: number[]): { comparison: number[], swap: number[] }[] | number[] {
+    const animations: { comparison: number[], swap: number[] }[] = [];
+    // array too short -> already sorted
+    if (array.length <= 1) {
         return array;
     }
-
-    // otherwise, divide the array into halves
-    let middleIdx: number = Math.floor(array.length / 2);
-    let leftHalf: number[] = array.slice(0, middleIdx);
-    let rightHalf: number[] = array.slice(middleIdx);
-
-    // sort each half
-    let sortedLeft: number[] = mergeSort(leftHalf);
-    let sortedRight: number[] = mergeSort(rightHalf);
-
-    // merge the halves and return
-    return merge(sortedLeft, sortedRight);
+    // otherwise, make auxiliary array and call on bounds with mergesorthelper
+    const auxArray: number[] = array.slice();
+    mergeSortHelper(array, 0, array.length - 1, auxArray, animations);
+    return animations;
 }
 
-const merge = (sortedLeft: number[], sortedRight: number[]) => {
-    let mergedArray: number[] = [];
-    let l: number = 0;
-    let r: number = 0;
+function mergeSortHelper(
+    mainArray: number[],
+    startIdx: number,
+    endIdx: number,
+    auxArray: number[],
+    animations: { comparison: number[], swap: number[] }[]
+) {
+    // Nothing to sort -> return
+    if (startIdx === endIdx) return;
+    // Otherwise, perform split and search
+    const middleIdx: number = Math.floor((startIdx + endIdx) / 2);
+    mergeSortHelper(auxArray, startIdx, middleIdx, mainArray, animations);
+    mergeSortHelper(auxArray, middleIdx + 1, endIdx, mainArray, animations);
+    // finally, perform merge and animations on array
+    doMerge(mainArray, startIdx, middleIdx, endIdx, auxArray, animations);
+}
 
-    while (l < sortedLeft.length && r < sortedRight.length) {
-        // compare values from left and right
-        if (sortedLeft[l] < sortedRight[r]) {
-            mergedArray.push(sortedLeft[l]);
-            l++;
+function doMerge(
+    mainArray: number[],
+    startIdx: number,
+    middleIdx: number,
+    endIdx: number,
+    auxArray: number[],
+    animations: { comparison: number[], swap: number[] }[]
+) {
+    let k: number = startIdx;
+    let i: number = startIdx;
+    let j: number = middleIdx + 1;
+
+    // animate swaps
+    while (i <= middleIdx && j <= endIdx) {
+        const animation = {comparison: [-1, -1], swap: [-1, -1]};
+        animation.comparison = [i, j];
+        if (auxArray[i] <= auxArray[j]) {
+            animation.swap = [k, i];
+            mainArray[k] = auxArray[i];
+            k++;
+            i++;
         }
         else {
-            mergedArray.push(sortedRight[r]);
-            r++;
+            animation.swap = [k, j];
+            mainArray[k] = auxArray[j];
+            k++;
+            j++;
         }
+        animations.push(animation);
     }
-    while (l < sortedLeft.length) {
-        mergedArray.push(sortedLeft[l]);
-        l++;
+
+    // animate swaps for values less than middleIdx
+    while (i <= middleIdx) {
+        animations.push({
+            comparison: [i, i],
+            swap: [k, i],
+        });
+        mainArray[k] = auxArray[i];
+        k++;
+        i++;
     }
-    while (r < sortedRight.length) {
-        mergedArray.push(sortedRight[r]);
-        r++;
+
+    // animate swaps for values less than endIdx
+    while (j <= endIdx) {
+        animations.push({
+            comparison: [j, j],
+            swap: [k, j],
+        });
+        mainArray[k] = auxArray[j]
+        k++;
+        j++;
     }
-    return mergedArray;
+
 }
+
+
+    
