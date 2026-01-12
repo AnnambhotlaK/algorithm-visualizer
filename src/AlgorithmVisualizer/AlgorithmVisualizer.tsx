@@ -30,7 +30,7 @@ export default class AlgorithmVisualizer extends React.Component<{}, AlgorithmVi
     resetArray() {
         const array: number[] = [];
         // Fill array with random values from 5 to 500
-        for (let i: number = 0; i < 270; i++) {
+        for (let i: number = 0; i < 280; i++) {
             array.push(randomIntFromInterval(5, 500));
         }
         this.setState({array: array});
@@ -53,21 +53,36 @@ export default class AlgorithmVisualizer extends React.Component<{}, AlgorithmVi
             return;
         }
         else {
-            const animationArray = animations as Animation[];
-            for (let i = 0; i < animationArray.length; i++) {
-                // get animation from array
-                const animation = animationArray[i];
-                const comparison = animation.comparison;
-                // convert to HTML elements and set styles for sorting
-                setTimeout(() => {
-                    const arrayBars = document.getElementsByClassName('array-bar');
-                    (arrayBars[comparison[1]] as HTMLElement).style.backgroundColor = 'red';
-                    (arrayBars[comparison[0]] as HTMLElement).style.backgroundColor = 'red';
+            const newAnimations: number[][] = [];
+            // construct newAnimations as array of threes: comparison, comparison, swap for each animation
+            // useful for animating properly later
+            for (const animation of animations) {
+                newAnimations.push((animation as Animation).comparison);
+                newAnimations.push((animation as Animation).comparison);
+                newAnimations.push((animation as Animation).swap);
+            }
+            for (let i = 0; i < newAnimations.length; i++) {
+                const arrayBars = document.getElementsByClassName('array-bar');
+                // i is a color change if we are on either of the comparisons (but never on a swap, since it's on indices 1 less than mult. of 3)
+                const isColorChange: boolean = (i % 3 !== 2);
+                if (isColorChange) {
+                    const [barOneIdx, barTwoIdx] = newAnimations[i];
+                    const barOneStyle = (arrayBars[barOneIdx] as HTMLElement).style;
+                    const barTwoStyle = (arrayBars[barTwoIdx] as HTMLElement).style;
+                    const color: string = i % 3 === 0 ? 'red' : 'pink';
                     setTimeout(() => {
-                        (arrayBars[comparison[1]] as HTMLElement).style.backgroundColor = 'pink';
-                        (arrayBars[comparison[0]] as HTMLElement).style.backgroundColor = 'pink';
-                    }, (i + 1) * 10);
-                }, i * 10);
+                        barOneStyle.backgroundColor = color;
+                        barTwoStyle.backgroundColor = color;
+                    }, i * 3);
+                }
+                // not on color change -> on swap, so swap bars by swapping the heights.
+                else {
+                    setTimeout(() => {
+                        const [barOneIdx, newHeight] = newAnimations[i];
+                        const barOneStyle = (arrayBars[barOneIdx] as HTMLElement).style;
+                        barOneStyle.height = `${newHeight}px`;
+                    }, i * 3);
+                }
             }
         }
     }
