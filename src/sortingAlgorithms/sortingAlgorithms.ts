@@ -1,11 +1,11 @@
 /* Stores various array sorting algorithms for the visualizer */
-import type { Animation } from '../interfaces/Animation';
+
 /**
  * Merge Sort implementation specially designed for animation.
  * @param array array of values to sort
  */
-export function mergeSort(array: number[]): Animation[] | number[] {
-    const animations: Animation[] = [];
+export function mergeSort(array: number[]): number[][] | number[] {
+    const animations: number[][] = [];
     // array too short -> already sorted
     if (array.length <= 1) {
         return array;
@@ -21,7 +21,7 @@ function mergeSortHelper(
     startIdx: number,
     endIdx: number,
     auxArray: number[],
-    animations: Animation[]
+    animations: number[][]
 ) {
     // Nothing to sort -> return
     if (startIdx === endIdx) return;
@@ -39,54 +39,39 @@ function doMerge(
     middleIdx: number,
     endIdx: number,
     auxArray: number[],
-    animations: Animation[]
+    animations: number[][]
 ) {
     let k: number = startIdx;
     let i: number = startIdx;
     let j: number = middleIdx + 1;
 
-    // animate swaps
     while (i <= middleIdx && j <= endIdx) {
-        const animation: Animation = {comparison: [-1, -1], swap: [-1, -1]};
-        animation.comparison = [i, j];
+        animations.push([i, j]); // push comparison to change color
+        animations.push([i, j]); // push comparison to revert color
         if (auxArray[i] <= auxArray[j]) {
-            animation.swap = [k, auxArray[i]];
-            mainArray[k] = auxArray[i];
-            k++;
-            i++;
+            animations.push([k, auxArray[i]]); // push swap to overwrite height values
+            mainArray[k++] = auxArray[i++];
         }
         else {
-            animation.swap = [k, auxArray[j]];
-            mainArray[k] = auxArray[j];
-            k++;
-            j++;
+            animations.push([k, auxArray[j]]);
+            mainArray[k++] = auxArray[j++];
         }
-        animations.push(animation);
     }
 
     // animate swaps for values less than middleIdx
     while (i <= middleIdx) {
-        animations.push({
-            comparison: [i, i],
-            swap: [k, auxArray[i]],
-        });
-        mainArray[k] = auxArray[i];
-        k++;
-        i++;
+        animations.push([i, i]);
+        animations.push([i, i]);
+        animations.push([k, auxArray[i]]);
+        mainArray[k++] = auxArray[i++];
     }
 
     // animate swaps for values less than endIdx
     while (j <= endIdx) {
-        animations.push({
-            comparison: [j, j],
-            swap: [k, auxArray[j]],
-        });
-        mainArray[k] = auxArray[j]
-        k++;
-        j++;
+        animations.push([j, j]);
+        animations.push([j, j]);
+        animations.push([k, auxArray[j]]);
+        mainArray[k++] = auxArray[j++];
     }
 
 }
-
-
-    

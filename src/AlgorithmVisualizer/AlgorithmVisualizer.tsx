@@ -1,7 +1,12 @@
 import React from "react";
 import * as sortingAlgorithms from '../sortingAlgorithms/sortingAlgorithms';
-import type { Animation } from '../interfaces/Animation';
 import './AlgorithmVisualizer.css';
+
+// This affects animation speed.
+const ANIMATION_SPEED_MS = 3;
+
+// This affects the number of bars in the array
+const NUMBER_OF_ARRAY_BARS = 300;
 
 // Define component interface
 interface AlgorithmVisualizerState {
@@ -30,7 +35,7 @@ export default class AlgorithmVisualizer extends React.Component<{}, AlgorithmVi
     resetArray() {
         const array: number[] = [];
         // Fill array with random values from 5 to 500
-        for (let i: number = 0; i < 280; i++) {
+        for (let i: number = 0; i < NUMBER_OF_ARRAY_BARS; i++) {
             array.push(randomIntFromInterval(5, 500));
         }
         this.setState({array: array});
@@ -39,56 +44,48 @@ export default class AlgorithmVisualizer extends React.Component<{}, AlgorithmVi
     /* ALGORITHMS */
 
     bubbleSort() {
-
+        //TODO: Implement
     }
 
     quickSort() {
-    
+        //TODO: Implement
     }
 
     mergeSort() {
-        const animations: (number[] | Animation[]) = sortingAlgorithms.mergeSort(this.state.array);
+        const animations: (number[] | number[][]) = sortingAlgorithms.mergeSort(this.state.array);
         // if animations stores numbers -> array is sorted, return now
         if (typeof animations[0] === 'number') {
             return;
         }
         else {
-            const newAnimations: number[][] = [];
-            // construct newAnimations as array of threes: comparison, comparison, swap for each animation
-            // useful for animating properly later
-            for (const animation of animations) {
-                newAnimations.push((animation as Animation).comparison);
-                newAnimations.push((animation as Animation).comparison);
-                newAnimations.push((animation as Animation).swap);
-            }
-            for (let i = 0; i < newAnimations.length; i++) {
+            for (let i = 0; i < animations.length; i++) {
                 const arrayBars = document.getElementsByClassName('array-bar');
                 // i is a color change if we are on either of the comparisons (but never on a swap, since it's on indices 1 less than mult. of 3)
                 const isColorChange: boolean = (i % 3 !== 2);
                 if (isColorChange) {
-                    const [barOneIdx, barTwoIdx] = newAnimations[i];
+                    const [barOneIdx, barTwoIdx] = animations[i] as number[];
                     const barOneStyle = (arrayBars[barOneIdx] as HTMLElement).style;
                     const barTwoStyle = (arrayBars[barTwoIdx] as HTMLElement).style;
                     const color: string = i % 3 === 0 ? 'red' : 'pink';
                     setTimeout(() => {
                         barOneStyle.backgroundColor = color;
                         barTwoStyle.backgroundColor = color;
-                    }, i * 3);
+                    }, i * ANIMATION_SPEED_MS);
                 }
                 // not on color change -> on swap, so swap bars by swapping the heights.
                 else {
                     setTimeout(() => {
-                        const [barOneIdx, newHeight] = newAnimations[i];
+                        const [barOneIdx, newHeight] = animations[i] as number[];
                         const barOneStyle = (arrayBars[barOneIdx] as HTMLElement).style;
                         barOneStyle.height = `${newHeight}px`;
-                    }, i * 3);
+                    }, i * ANIMATION_SPEED_MS);
                 }
             }
         }
     }
 
     heapSort() {
-        
+        //TODO: Implement
     }
 
     testSortingAlgorithms() {
