@@ -1,14 +1,12 @@
-/* Stores various array sorting algorithms for the visualizer */
-
 /**
  * Merge Sort implementation specially designed for animation.
  * @param array array of values to sort
  */
-export function mergeSort(array: number[]): number[][] | number[] {
+export function mergeSort(array: number[]): number[][] {
     const animations: number[][] = [];
     // array too short -> already sorted
     if (array.length <= 1) {
-        return array;
+        return animations;
     }
     // otherwise, make auxiliary array and call on bounds with mergesorthelper
     const auxArray: number[] = array.slice();
@@ -73,5 +71,4 @@ function doMerge(
         animations.push([k, auxArray[j]]);
         mainArray[k++] = auxArray[j++];
     }
-
 }

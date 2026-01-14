@@ -1,5 +1,6 @@
 import React from "react";
-import * as sortingAlgorithms from '../sortingAlgorithms/sortingAlgorithms';
+import { mergeSort } from '../sortingAlgorithms/mergeSort';
+import { bubbleSort } from '../sortingAlgorithms/bubbleSort';
 import './AlgorithmVisualizer.css';
 
 // This affects animation speed.
@@ -44,7 +45,7 @@ export default class AlgorithmVisualizer extends React.Component<{}, AlgorithmVi
     /* ALGORITHMS */
 
     bubbleSort() {
-        //TODO: Implement
+        const animations: number[][] = bubbleSort(this.state.array);
     }
 
     quickSort() {
@@ -52,34 +53,33 @@ export default class AlgorithmVisualizer extends React.Component<{}, AlgorithmVi
     }
 
     mergeSort() {
-        const animations: (number[] | number[][]) = sortingAlgorithms.mergeSort(this.state.array);
-        // if animations stores numbers -> array is sorted, return now
-        if (typeof animations[0] === 'number') {
+        const animations: number[][] = mergeSort(this.state.array);
+        // animations is empty -> array is sorted, return
+        if (animations.length === 0) {
             return;
         }
-        else {
-            for (let i = 0; i < animations.length; i++) {
-                const arrayBars = document.getElementsByClassName('array-bar');
-                // i is a color change if we are on either of the comparisons (but never on a swap, since it's on indices 1 less than mult. of 3)
-                const isColorChange: boolean = (i % 3 !== 2);
-                if (isColorChange) {
-                    const [barOneIdx, barTwoIdx] = animations[i] as number[];
+        // otherwise -> visualize each comparison and swap
+        for (let i = 0; i < animations.length; i++) {
+            const arrayBars = document.getElementsByClassName('array-bar');
+            // i is a color change if we are on either of the comparisons (but never on a swap, since it's on indices 1 less than mult. of 3)
+            const isColorChange: boolean = (i % 3 !== 2);
+            if (isColorChange) {
+                const [barOneIdx, barTwoIdx] = animations[i] as number[];
+                const barOneStyle = (arrayBars[barOneIdx] as HTMLElement).style;
+                const barTwoStyle = (arrayBars[barTwoIdx] as HTMLElement).style;
+                const color: string = i % 3 === 0 ? 'red' : 'pink';
+                setTimeout(() => {
+                    barOneStyle.backgroundColor = color;
+                    barTwoStyle.backgroundColor = color;
+                }, i * ANIMATION_SPEED_MS);
+            }
+            // not on color change -> on swap, so swap bars by swapping the heights.
+            else {
+                setTimeout(() => {
+                    const [barOneIdx, newHeight] = animations[i] as number[];
                     const barOneStyle = (arrayBars[barOneIdx] as HTMLElement).style;
-                    const barTwoStyle = (arrayBars[barTwoIdx] as HTMLElement).style;
-                    const color: string = i % 3 === 0 ? 'red' : 'pink';
-                    setTimeout(() => {
-                        barOneStyle.backgroundColor = color;
-                        barTwoStyle.backgroundColor = color;
-                    }, i * ANIMATION_SPEED_MS);
-                }
-                // not on color change -> on swap, so swap bars by swapping the heights.
-                else {
-                    setTimeout(() => {
-                        const [barOneIdx, newHeight] = animations[i] as number[];
-                        const barOneStyle = (arrayBars[barOneIdx] as HTMLElement).style;
-                        barOneStyle.height = `${newHeight}px`;
-                    }, i * ANIMATION_SPEED_MS);
-                }
+                    barOneStyle.height = `${newHeight}px`;
+                }, i * ANIMATION_SPEED_MS);
             }
         }
     }
