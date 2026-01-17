@@ -4,7 +4,7 @@ import { bubbleSort } from '../sortingAlgorithms/bubbleSort';
 import './AlgorithmVisualizer.css';
 
 // This affects animation speed.
-const ANIMATION_SPEED_MS = 3;
+const ANIMATION_SPEED_MS = 1;
 
 // This affects the number of bars in the array
 const NUMBER_OF_ARRAY_BARS = 300;
@@ -46,6 +46,34 @@ export default class AlgorithmVisualizer extends React.Component<{}, AlgorithmVi
 
     bubbleSort() {
         const animations: number[][] = bubbleSort(this.state.array);
+        // animations is empty -> array is sorted, return
+        if (animations.length === 0) {
+            return;
+        }
+        // otherwise -> visualize each comparison and swap
+        for (let i = 0; i < animations.length; i++) {
+            const arrayBars = document.getElementsByClassName('array-bar');
+            // i is a color change if we are on either of the comparisons (but never on a swap, since it's on indices 1 less than mult. of 3)
+            const isColorChange: boolean = (i % 3 !== 2);
+            if (isColorChange) {
+                const [barOneIdx, barTwoIdx] = animations[i] as number[];
+                const barOneStyle = (arrayBars[barOneIdx] as HTMLElement).style;
+                const barTwoStyle = (arrayBars[barTwoIdx] as HTMLElement).style;
+                const color: string = i % 3 === 0 ? 'red' : 'pink';
+                setTimeout(() => {
+                    barOneStyle.backgroundColor = color;
+                    barTwoStyle.backgroundColor = color;
+                }, i * ANIMATION_SPEED_MS);
+            }
+            // not on color change -> on swap, so swap bars by swapping the heights.
+            else {
+                setTimeout(() => {
+                    const [barOneIdx, newHeight] = animations[i] as number[];
+                    const barOneStyle = (arrayBars[barOneIdx] as HTMLElement).style;
+                    barOneStyle.height = `${newHeight}px`;
+                }, i * ANIMATION_SPEED_MS);
+            }
+        }
     }
 
     quickSort() {
@@ -90,6 +118,11 @@ export default class AlgorithmVisualizer extends React.Component<{}, AlgorithmVi
 
     testSortingAlgorithms() {
         //TODO: Implement on all algos
+    }
+
+    // Immediately halt alll sorting algorithms taking place
+    stopAnimation() {
+
     }
 
     // Render visualizer component
