@@ -9,6 +9,10 @@ const ANIMATION_SPEED_MS = 1;
 // This affects the number of bars in the array
 const NUMBER_OF_ARRAY_BARS = 300;
 
+// Stores active timeouts, or currently animating sorting processes.
+// This is necessary for allowing the user to stop animations.
+const activeTimeouts = new Set<number>();
+
 // Define component interface
 interface AlgorithmVisualizerState {
     // Visualizer requires current state of the array of data
@@ -60,18 +64,20 @@ export default class AlgorithmVisualizer extends React.Component<{}, AlgorithmVi
                 const barOneStyle = (arrayBars[barOneIdx] as HTMLElement).style;
                 const barTwoStyle = (arrayBars[barTwoIdx] as HTMLElement).style;
                 const color: string = i % 3 === 0 ? 'red' : 'pink';
-                setTimeout(() => {
+                const id = setTimeout(() => {
                     barOneStyle.backgroundColor = color;
                     barTwoStyle.backgroundColor = color;
                 }, i * ANIMATION_SPEED_MS);
+                activeTimeouts.add(id);
             }
             // not on color change -> on swap, so swap bars by swapping the heights.
             else {
-                setTimeout(() => {
+                const id = setTimeout(() => {
                     const [barOneIdx, newHeight] = animations[i] as number[];
                     const barOneStyle = (arrayBars[barOneIdx] as HTMLElement).style;
                     barOneStyle.height = `${newHeight}px`;
                 }, i * ANIMATION_SPEED_MS);
+                activeTimeouts.add(id);
             }
         }
     }
@@ -96,18 +102,20 @@ export default class AlgorithmVisualizer extends React.Component<{}, AlgorithmVi
                 const barOneStyle = (arrayBars[barOneIdx] as HTMLElement).style;
                 const barTwoStyle = (arrayBars[barTwoIdx] as HTMLElement).style;
                 const color: string = i % 3 === 0 ? 'red' : 'pink';
-                setTimeout(() => {
+                const id = setTimeout(() => {
                     barOneStyle.backgroundColor = color;
                     barTwoStyle.backgroundColor = color;
                 }, i * ANIMATION_SPEED_MS);
+                activeTimeouts.add(id);
             }
             // not on color change -> on swap, so swap bars by swapping the heights.
             else {
-                setTimeout(() => {
+                const id = setTimeout(() => {
                     const [barOneIdx, newHeight] = animations[i] as number[];
                     const barOneStyle = (arrayBars[barOneIdx] as HTMLElement).style;
                     barOneStyle.height = `${newHeight}px`;
                 }, i * ANIMATION_SPEED_MS);
+                activeTimeouts.add(id);
             }
         }
     }
@@ -118,11 +126,15 @@ export default class AlgorithmVisualizer extends React.Component<{}, AlgorithmVi
 
     testSortingAlgorithms() {
         //TODO: Implement on all algos
+        // should generate many random arrays and run the sorting algorithm on each of them
     }
 
-    // Immediately halt alll sorting algorithms taking place
-    stopAnimation() {
-
+    // Immediately halt all sorting algorithms taking place
+    stopAnimations() {
+        // clear all timeouts
+        activeTimeouts.forEach(id => clearTimeout(id));
+        // empty activeTimeouts
+        activeTimeouts.clear();
     }
 
     // Render visualizer component
@@ -152,6 +164,7 @@ export default class AlgorithmVisualizer extends React.Component<{}, AlgorithmVi
                 <button onClick={() => this.mergeSort()}>Merge Sort</button>
                 <button onClick={() => this.heapSort()}>Heap Sort</button>
                 <button onClick={() => this.testSortingAlgorithms()}>Test Sorting Algorithms</button>
+                <button onClick={() => this.stopAnimations()}>Stop Animations</button>
             </div>
         );
     }
