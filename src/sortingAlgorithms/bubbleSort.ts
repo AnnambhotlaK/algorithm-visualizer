@@ -8,8 +8,6 @@ export function bubbleSort(array: number[]): number[][] {
     if (array.length <= 1) {
         return animations;
     }
-    // TODO: Sort and define animations array
-
     // Perform bubble sort
     for (let i = 0; i < array.length; i++) {
         for (let j = i; j < array.length; j++) {
