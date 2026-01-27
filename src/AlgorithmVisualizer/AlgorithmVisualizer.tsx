@@ -4,7 +4,6 @@ import { selectionSort } from '../sortingAlgorithms/selectionSort';
 import { insertionSort } from '../sortingAlgorithms/insertionSort';
 import { mergeSort } from '../sortingAlgorithms/mergeSort';
 import { quickSort } from '../sortingAlgorithms/quickSort';
-import { heapSort } from '../sortingAlgorithms/heapSort';
 import './AlgorithmVisualizer.css';
 
 // This affects animation speed.
@@ -12,6 +11,9 @@ const ANIMATION_SPEED_MS = 3;
 
 // This affects the number of bars in the array.
 const NUMBER_OF_ARRAY_BARS = 300;
+
+// This affects the maximum value of a bar in the array.
+const MAX_ARRAY_VALUE = 400;
 
 // Stores active timeouts, or currently animating sorting processes.
 // This is necessary for allowing the user to stop animations.
@@ -45,12 +47,12 @@ export default class AlgorithmVisualizer extends React.Component<{}, AlgorithmVi
         const array: number[] = [];
         // Fill array with random values from 5 to 500
         for (let i: number = 0; i < NUMBER_OF_ARRAY_BARS; i++) {
-            array.push(randomIntFromInterval(5, 500));
+            array.push(randomIntFromInterval(5, MAX_ARRAY_VALUE));
         }
         this.setState({array: array});
     }
 
-    /* ALGORITHMS */
+    /* ALGORITHMS START */
 
     bubbleSort() {
         const animations: number[][] = bubbleSort(this.state.array);
@@ -77,10 +79,7 @@ export default class AlgorithmVisualizer extends React.Component<{}, AlgorithmVi
         this.visualizeSorting(animations);
     }
 
-    heapSort() {
-        const animations: number[][] = heapSort(this.state.array);
-        this.visualizeSorting(animations);
-    }
+    /* ALGORITHMS END */
 
     /**
      * Generic algorithm to visualize sorting algorithms.
@@ -139,28 +138,41 @@ export default class AlgorithmVisualizer extends React.Component<{}, AlgorithmVi
 
         return (
             <div className="array-container">
+
+                
+                
                 {/* Generate Bars*/}
-                {array.map((value: number, idx: number) => (
-                    // array-bar is a single bar in the visualizer
-                    // each is assigned a value from the array
-                    // styled with height in px = value
-                    <div 
-                        className="array-bar"
-                        key={idx}
-                        style={{height: `${value}px`}}
-                    >
-                    </div>
-                ))}
-                {/* Generate New Array Button*/}
-                <button onClick={() => this.resetArray()}>Generate New Array</button>
-                {/* Algorithm Sort Buttons */}
-                <button onClick={() => this.bubbleSort()}>Bubble Sort</button>
-                <button onClick={() => this.selectionSort()}>Selection Sort</button>
-                <button onClick={() => this.insertionSort()}>Insertion Sort</button>
-                <button onClick={() => this.quickSort()}>Quick Sort</button>
-                <button onClick={() => this.mergeSort()}>Merge Sort</button>
-                <button onClick={() => this.heapSort()}>Heap Sort</button>
-                <button onClick={() => this.stopAnimations()}>Stop Animations</button>
+                <div className="array-bars-container">
+                    {array.map((value: number, idx: number) => (
+                        // array-bar is a single bar in the visualizer
+                        // each is assigned a value from the array
+                        // styled with height in px = value
+                        <div 
+                            className="array-bar"
+                            key={idx}
+                            style={{height: `${value}px`}}
+                        >
+                        </div>
+                    ))}
+                </div>
+
+                <div className="button-container">
+                    {/* Generate New Array Button*/}
+                    <button onClick={() => this.resetArray()}>Generate New Array</button>
+
+                    {/* Algorithm Sort Buttons */}
+                    <button onClick={() => this.bubbleSort()}>Bubble Sort</button>
+                    <button onClick={() => this.selectionSort()}>Selection Sort</button>
+                    <button onClick={() => this.insertionSort()}>Insertion Sort</button>
+                    <button onClick={() => this.quickSort()}>Quick Sort</button>
+                    <button onClick={() => this.mergeSort()}>Merge Sort</button>
+
+                    {/* Stop Animations Button */}
+                    <button onClick={() => this.stopAnimations()}>Stop Animations</button>
+                </div>
+                
+
+                
             </div>
         );
     }
