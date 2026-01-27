@@ -137,9 +137,12 @@ export default class AlgorithmVisualizer extends React.Component<{}, AlgorithmVi
         const {array} = this.state;
 
         return (
-            <div className="array-container">
+            <div className="visualizer-container">
 
-                
+                <div className="visualizer-title-container">
+                    <h1>Sorting Visualizer</h1>
+                    <p>by <a target="_blank" rel="noopener noreferrer" href="https://github.com/AnnambhotlaK">Kishore Annambhotla</a></p>
+                </div>
                 
                 {/* Generate Bars*/}
                 <div className="array-bars-container">
@@ -158,7 +161,7 @@ export default class AlgorithmVisualizer extends React.Component<{}, AlgorithmVi
 
                 <div className="button-container">
                     {/* Generate New Array Button*/}
-                    <button onClick={() => this.resetArray()}>Generate New Array</button>
+                    <button onClick={() => this.resetArray()}>New Array</button>
 
                     {/* Algorithm Sort Buttons */}
                     <button onClick={() => this.bubbleSort()}>Bubble Sort</button>

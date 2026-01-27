@@ -1,10 +1,31 @@
-.array-container {
+.visualizer-container {
     height: 100vh;
     width: 100vw;
     display: flex;
     flex-direction: column;
     align-items: center;
     /*overflow: hidden;*/ /* Prevents scrolling */
+}
+
+.visualizer-title-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding-left: 20px;
+    padding-top: 5px;
+    width: 100%;
+    color: white;
+}
+
+.visualizer-title-container h1 {
+    margin: 0;
+    padding: 0;
+}
+
+.visualizer-title-container p {
+    margin: 10px 0 10px 0;
+    padding: 0;
 }
 
 .array-bars-container {
@@ -31,7 +52,7 @@
     flex-wrap: wrap;
 }
 
-button {
+.button-container button {
     margin: 5px;
     color: white;
     border: pink 2px solid;
